@@ -9,7 +9,8 @@ device = torch.device("cpu")
 model = DeepfakeClassifier(backbone="b4")
 
 # Load trained weights
-model_path = os.path.join("models", "best_model.pt")
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+model_path = os.path.join(BASE_DIR, "models", "best_model.pt")
 checkpoint = torch.load(model_path, map_location=device)
 
 # Some checkpoints store only weights, others store a dictionary
@@ -25,7 +26,7 @@ model.eval()
 def predict(face_tensor):
     """
     Predict whether the face is Real or Fake.
-    face_tensor must be a PyTorch tensor of shape [1, 3, 380, 380]
+    face_tensor must be a PyTorch tensor of shape [1, 3, 224, 224]
     """
 
     with torch.no_grad():

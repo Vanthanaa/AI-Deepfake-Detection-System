@@ -1,8 +1,8 @@
 import os
 
-from face_detector import detect_and_crop
-from preprocess import preprocess
-from deepfake_model import predict as model_predict
+from ai.face_detector import detect_and_crop
+from ai.preprocess import preprocess
+from ai.deepfake_model import predict as model_predict
 
 
 def predict_image(file_path):
