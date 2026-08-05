@@ -2,24 +2,42 @@ import os
 
 from face_detector import detect_and_crop
 from preprocess import preprocess
-from deepfake_model import predict
+from deepfake_model import predict as model_predict
 
-current_folder = os.path.dirname(__file__)
 
-image_path = os.path.join(current_folder, "test.png")
+def predict_image(file_path):
+    """
+    Predict whether the uploaded image is Real or Fake.
 
-face = detect_and_crop(image_path)
+    Input:
+        file_path (str): Path to the uploaded image
 
-if face is None:
-    print("No face detected")
-    exit()
+    Output:
+        {
+            "status": "...",
+            "confidence": ...
+        }
+    """
 
-processed = preprocess(face)
+    face = detect_and_crop(file_path)
 
-result = predict(processed)
+    if face is None:
+        return {
+            "status": "No Face Detected",
+            "confidence": 0
+        }
 
-print()
+    face_tensor = preprocess(face)
 
-print("Prediction")
+    return model_predict(face_tensor)
 
-print(result)
+
+# Local testing only
+if __name__ == "__main__":
+    current_folder = os.path.dirname(__file__)
+    image_path = os.path.join(current_folder, "test.png")
+
+    result = predict_image(image_path)
+
+    print("Prediction")
+    print(result)
