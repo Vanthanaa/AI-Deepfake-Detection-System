@@ -1,6 +1,7 @@
 from app import app
 from flask import request, jsonify
 import os
+from ai.predict import predict_image 
 
 # Folder where uploaded files will be stored
 UPLOAD_FOLDER = "../uploads"
@@ -51,15 +52,18 @@ def upload_file():
 @app.route("/detect", methods=["POST"])
 def detect():
 
-    # Temporary response
-    # Later this will be replaced with Olivia's AI model output
+    if "file" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
 
-    result = {
-        "status": "Fake",
-        "confidence": 96,
-        "voice": "Fake",
-        "lip_sync": "Mismatch"
-    }
+    file = request.files["file"]
+
+    if file.filename == "":
+        return jsonify({"error": "No file selected"}), 400
+
+    filepath = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(filepath)
+
+    result = predict_image(filepath)
 
     return jsonify(result)
 
